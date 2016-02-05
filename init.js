@@ -8,8 +8,8 @@ plugin.id = "network-trace";
 
 plugin.init =
 function _init(glob) {
-    plugin.major = 0;
-    plugin.minor = 1;
+    plugin.major = 1;
+    plugin.minor = 0;
     plugin.version = plugin.major + "." + plugin.minor + " (05 Feb 2016)";
     plugin.description = "Displays network input/output inside ChatZilla. " +
     "By James Ross <chatzilla-plugins@james-ross.co.uk>.";
