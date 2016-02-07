@@ -73,7 +73,7 @@ var DisplayDummyUser = {
 };
 
 function observeAfterConnect() {
-    this.connection[plugin.id + "-network"] = this;
+    this.connection[plugin.id + "-network"] = this.parent;
 }
 
 function observeAfterSendData(str) {
