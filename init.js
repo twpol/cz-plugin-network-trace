@@ -9,8 +9,8 @@ plugin.id = "network-trace";
 plugin.init =
 function _init(glob) {
     plugin.major = 1;
-    plugin.minor = 1;
-    plugin.version = plugin.major + "." + plugin.minor + " (07 Feb 2016)";
+    plugin.minor = 2;
+    plugin.version = plugin.major + "." + plugin.minor + " (14 Feb 2016)";
     plugin.description = "Displays network input/output inside ChatZilla. " +
     "By James Ross <chatzilla-plugins@james-ross.co.uk>.";
 
@@ -31,7 +31,8 @@ function _enable() {
         plugin.id + "-hook");
     CIRCServer.prototype.connect = observeAfter(CIRCServer.prototype.connect, observeAfterConnect);
     CBSConnection.prototype.sendData = observeAfter(CBSConnection.prototype.sendData, observeAfterSendData);
-
+    client.responseCodeMap[plugin.id + "->>"] = "[>>]";
+    client.responseCodeMap[plugin.id + "-<<"] = "[<<]";
     return true;
 }
 
@@ -41,6 +42,8 @@ function _disable() {
     client.eventPump.removeHookByName(plugin.id + "-hook");
     CIRCServer.prototype.connect = unwrap(CIRCServer.prototype.connect);
     CBSConnection.prototype.sendData = unwrap(CBSConnection.prototype.sendData);
+    delete client.responseCodeMap[plugin.id + "->>"];
+    delete client.responseCodeMap[plugin.id + "-<<"];
     return true;
 }
 
@@ -78,13 +81,13 @@ function observeAfterConnect() {
 
 function observeAfterSendData(str) {
     if (this[plugin.id + "-network"] && this[plugin.id + "-network"][plugin.id + "-enabled"]) {
-        this[plugin.id + "-network"].displayHere(String(str), ">>", DisplayDummyUser);
+        this[plugin.id + "-network"].displayHere(String(str), plugin.id + "->>", DisplayDummyUser);
     }
 }
 
 function observeServerRawData(e) {
     if (e.destObject.parent && e.destObject.parent[plugin.id + "-enabled"]) {
-        e.destObject.parent.displayHere(String(e.data), "<<", DisplayDummyUser);
+        e.destObject.parent.displayHere(String(e.data), plugin.id + "-<<", DisplayDummyUser);
     }
 }
 
